@@ -66,33 +66,35 @@
     }
   }
 
-  .col-resize {
+  .col-resize, .row-resize {
     position: absolute;
-    top: 0;
-    right: 0;
     bottom: 0;
-    opacity: 0;
-    width: 2px;
+    right: 0;
     background: $primary-color;
+    opacity: 0;
     z-index: 1000;
+
     &:hover {
       opacity: 1!important;
+    }
+  }
+
+  .col-resize {
+    top: 0;
+    width: 4px;
+
+    &:hover {
       cursor: col-resize;
     }
   }
 
   .row-resize {
-    position: absolute;
-    right: 0;
-    bottom: 0;
     left: 0;
-    opacity: 0;
     height: 4px;
-    background: $primary-color;
-    z-index: 1000;
+
     &:hover {
-      opacity: 1!important;
       cursor: row-resize;
     }
   }
+
 }
