@@ -1,6 +1,6 @@
-import {isEqual} from '@core/utils';
+import {isEqual} from '@core/utils'
 
-export class StoreSubsriber {
+export class StoreSubscriber {
   constructor(store) {
     this.store = store
     this.sub = null
@@ -23,6 +23,10 @@ export class StoreSubsriber {
       })
 
       this.prevState = this.store.getState()
+
+      if (process.env.NODE_ENV === 'development') {
+        window['redux'] = this.prevState
+      }
     })
   }
 
