@@ -5,8 +5,8 @@ import {resizeHandler} from '@/components/table/table.resize'
 import {isCell, matrix, nextSelector, shouldResize} from './table.functions'
 import {TableSelection} from '@/components/table/TableSelection'
 import * as actions from '@/redux/actions'
-import {defaultStyles} from '@/constans';
-import {parse} from '@core/parse';
+import {defaultStyles} from '@/constants'
+import {parse} from '@core/parse'
 
 export class Table extends ExcelComponent {
   static className = 'excel__table'
@@ -33,8 +33,9 @@ export class Table extends ExcelComponent {
     this.selectCell(this.$root.find('[data-id="0:0"]'))
 
     this.$on('formula:input', value => {
-      this.selection.current.attr('data-value', value)
-      this.selection.current.text(parse(value))
+      this.selection.current
+          .attr('data-value', value)
+          .text(parse(value))
       this.updateTextInStore(value)
     })
 
@@ -46,7 +47,7 @@ export class Table extends ExcelComponent {
       this.selection.applyStyle(value)
       this.$dispatch(actions.applyStyle({
         value,
-        ids: this.selection.selectorIds
+        ids: this.selection.selectedIds
       }))
     })
   }
@@ -55,7 +56,7 @@ export class Table extends ExcelComponent {
     this.selection.select($cell)
     this.$emit('table:select', $cell)
     const styles = $cell.getStyles(Object.keys(defaultStyles))
-    this.$dispatch(actions.changeStyle(styles))
+    this.$dispatch(actions.changeStyles(styles))
   }
 
   async resizeTable(event) {
@@ -74,7 +75,7 @@ export class Table extends ExcelComponent {
       const $target = $(event.target)
       if (event.shiftKey) {
         const $cells = matrix($target, this.selection.current)
-          .map(id => this.$root.find(`[data-id="${id}"]`))
+            .map(id => this.$root.find(`[data-id="${id}"]`))
         this.selection.selectGroup($cells)
       } else {
         this.selectCell($target)
@@ -104,14 +105,12 @@ export class Table extends ExcelComponent {
 
   updateTextInStore(value) {
     this.$dispatch(actions.changeText({
-        id: this.selection.current.id(),
-        value
-      }
-    ))
-}
+      id: this.selection.current.id(),
+      value
+    }))
+  }
 
   onInput(event) {
-    // this.$emit('table:input', $(event.target))
     this.updateTextInStore($(event.target).text())
   }
 }

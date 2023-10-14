@@ -1,6 +1,6 @@
-import {toInlineStyles} from '@core/utils';
-import {defaultStyles} from '@/constans';
-import {parse} from '@core/parse';
+import {toInlineStyles} from '@core/utils'
+import {defaultStyles} from '@/constants'
+import {parse} from '@core/parse'
 
 const CODES = {
   A: 65,
@@ -21,7 +21,7 @@ function getHeight(state, index) {
 function toCell(state, row) {
   return function(_, col) {
     const id = `${row}:${col}`
-    // const width = getWidth(state.colState, col)
+    const width = getWidth(state.colState, col)
     const data = state.dataState[id]
     const styles = toInlineStyles({
       ...defaultStyles,
@@ -33,9 +33,9 @@ function toCell(state, row) {
         contenteditable 
         data-col="${col}"
         data-type="cell"
-        data-value = "${data || ''}"
         data-id="${id}"
-        style="${styles};"
+        data-value="${data || ''}"
+        style="${styles}; width: ${width}"
       >${parse(data) || ''}</div>
     `
   }
@@ -55,7 +55,7 @@ function toColumn({col, index, width}) {
   `
 }
 
-function createRow(index, content, state) {
+function createRow(index, content, state = {}) {
   const resize = index ? '<div class="row-resize" data-resize="row"></div>' : ''
   const height = getHeight(state, index)
   return `
@@ -97,7 +97,7 @@ export function createTable(rowsCount = 15, state = {}) {
       .map(toColumn)
       .join('')
 
-  rows.push(createRow(null, cols, {}))
+  rows.push(createRow(null, cols))
 
   for (let row = 0; row < rowsCount; row++) {
     const cells = new Array(colsCount)
@@ -105,7 +105,7 @@ export function createTable(rowsCount = 15, state = {}) {
         .map(toCell(state, row))
         .join('')
 
-    rows.push(createRow((row + 1), cells, state.rowState))
+    rows.push(createRow(row + 1, cells, state.rowState))
   }
 
   return rows.join('')
